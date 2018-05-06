@@ -22,7 +22,8 @@ Complete la tabla:
 
 | Integrante | github nick |
 |------------|-------------|
-|            |             |
+| Cristian Danilo Ramirez Vargas | [rvcristiand](https://github.com/rvcristiand) |
+| Edward Camilo Carrillo Estupiñan | [eccarrilloe](https://github.com/eccarrilloe) |
 
 ## Entrega
 
