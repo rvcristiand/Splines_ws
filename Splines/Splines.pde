@@ -20,9 +20,9 @@ import frames.processing.*;
 int mode;
 
 Scene scene;
-Interpolator interpolator;
+myInterpolator interpolator;
 OrbitNode eye;
-boolean drawGrid = true, drawCtrl = true;
+boolean drawGrid = true, drawCtrl = true, drawCoordinates = true;
 
 //Choose P3D for a 3D scene, or P2D or JAVA2D for a 2D scene
 String renderer = P3D;
@@ -31,36 +31,42 @@ void setup() {
   size(800, 800, renderer);
   scene = new Scene(this);
   eye = new OrbitNode(scene);
-  eye.setDamping(0);
+  eye.setDamping(0);  // qué es damping
   scene.setEye(eye);
-  scene.setFieldOfView(PI / 3);
+  scene.setFieldOfView(PI / 3);  // qué es Field of View
   //interactivity defaults to the eye
-  scene.setDefaultGrabber(eye);
-  scene.setRadius(150);
-  scene.fitBallInterpolation();
-  interpolator = new Interpolator(scene, new Frame());
+  scene.setDefaultGrabber(eye);  // qué es Default Grabber
+  scene.setRadius(150);  // radius of the graph observed by the eye
+  scene.fitBallInterpolation();  // Interpolates the eye so that the entire graph fits the screen at the end
+  interpolator = new myInterpolator(scene, new Frame());
   // framesjs next version, simply go:
   //interpolator = new Interpolator(scene);
 
   // Using OrbitNodes makes path editable
   for (int i = 0; i < 8; i++) {
     Node ctrlPoint = new OrbitNode(scene);
-    ctrlPoint.randomize();
-    interpolator.addKeyFrame(ctrlPoint);
+    ctrlPoint.randomize();  // returns a random graph node. The node is randmly positioned inside the ball defined by center and raduis
+    interpolator.addKeyFrame(ctrlPoint);  // appends a new key frame to path
   }
+  //float scale = 2.5;
+  //for (int i = 0; i < 4; i++) {
+  //  Node ctrlPoint = new OrbitNode(scene);
+  //  ctrlPoint.setPosition(new Vector(i*scale, pow(i*scale, 2), 0));
+  //  interpolator.addKeyFrame(ctrlPoint);
+  //}
 }
 
 void draw() {
   background(175);
   if (drawGrid) {
     stroke(255, 255, 0);
-    scene.drawGrid(200, 50);
+    scene.drawGrid(200, 50);  // draws a grid of size onto pGraphics in the XY plane, centered on (0,0,0), having subdivisions
   }
   if (drawCtrl) {
     fill(255, 0, 0);
     stroke(255, 0, 255);
-    for (Frame frame : interpolator.keyFrames())
-      scene.drawPickingTarget((Node)frame);
+    for (Frame frame : interpolator.keyFrames())  // returns the list of key frames which defines this interpolator
+      scene.drawPickingTarget((Node)frame);  // Draws the node picking target: a shooter target visual hint of Node.precisionThreshold()
   } else {
     fill(255, 0, 0);
     stroke(255, 0, 255);
@@ -71,6 +77,28 @@ void draw() {
   // To retrieve the positions of the control points do:
   // for(Frame frame : interpolator.keyFrames())
   //   frame.position();
+  //switch (mode) {
+  //  case 0:
+  //    //scene.drawNaturalPath(interpolator);
+  //    break;
+  //  case 1:
+  //    break;
+  //  case 2:
+  //    break;
+  //  case 3:
+  //    break;
+  //}
+  
+  //if (drawCoordinates) {
+  //  for (Frame frame : interpolator.myPath()) {
+  //    pushStyle();
+  //    textSize(8);
+  //    text((int) frame.position().x() + ", " + 
+  //         (int) frame.position().y() + ", " +
+  //         (int) frame.position().z() + ", ", frame.position().x(), frame.position().y(), frame.position().z());
+  //    popStyle();
+  //  }
+  //}
 }
 
 void keyPressed() {
@@ -80,4 +108,7 @@ void keyPressed() {
     drawGrid = !drawGrid;
   if (key == 'c')
     drawCtrl = !drawCtrl;
+  if (key == 'x') {
+    drawCoordinates = !drawCoordinates;
+  }
 }
