@@ -17,7 +17,7 @@ import frames.processing.*;
 // global variables
 // modes: 0 natural cubic spline; 1 Hermite;
 // 2 (degree 7) Bezier; 3 Cubic Bezier
-int mode;
+int mode=3;// int mode;
 
 Scene scene;
 myInterpolator interpolator;
