@@ -17,10 +17,11 @@ import frames.processing.*;
 // global variables
 // modes: 0 natural cubic spline; 1 Hermite;
 // 2 (degree 7) Bezier; 3 Cubic Bezier
-int mode=3;// int mode;
+int mode=0;// int mode;
 
 Scene scene;
-myInterpolator interpolator;
+SplinesInterpolator interpolator;
+List<OrbitNode> points;
 OrbitNode eye;
 boolean drawGrid = true, drawCtrl = true, drawCoordinates = true;
 
@@ -38,16 +39,12 @@ void setup() {
   scene.setDefaultGrabber(eye);  // qué es Default Grabber
   scene.setRadius(150);  // radius of the graph observed by the eye
   scene.fitBallInterpolation();  // Interpolates the eye so that the entire graph fits the screen at the end
-  interpolator = new myInterpolator(scene, new Frame());
+  interpolator = new SplinesInterpolator(scene, new Frame());
   // framesjs next version, simply go:
   //interpolator = new Interpolator(scene);
 
   // Using OrbitNodes makes path editable
-  for (int i = 0; i < 8; i++) {
-    Node ctrlPoint = new OrbitNode(scene);
-    ctrlPoint.randomize();  // returns a random graph node. The node is randmly positioned inside the ball defined by center and raduis
-    interpolator.addKeyFrame(ctrlPoint);  // appends a new key frame to path
-  }
+  regeneratePoints(8);
   //float scale = 2.5;
   //for (int i = 0; i < 4; i++) {
   //  Node ctrlPoint = new OrbitNode(scene);
@@ -101,11 +98,25 @@ void draw() {
   //}
 }
 
+void regeneratePoints(int numOfPoints) {
+  points = new ArrayList<OrbitNode>();
+
+  for (int i = 0; i < numOfPoints; i++) {
+    OrbitNode ctrlPoint = new OrbitNode(scene);
+    ctrlPoint.randomize();  // returns a random graph node. The node is randmly positioned inside the ball defined by center and raduis
+
+    points.add(ctrlPoint);
+    interpolator.addKeyFrame(ctrlPoint);  // appends a new key frame to path
+  }
+}
+
 void keyPressed() {
   if (key == ' ')
     mode = mode < 3 ? mode+1 : 0;
   if (key == 'g')
     drawGrid = !drawGrid;
+  if (key == 'r')
+    regeneratePoints(8);
   if (key == 'c')
     drawCtrl = !drawCtrl;
   if (key == 'x') {
